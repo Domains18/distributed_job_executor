@@ -1,0 +1,21 @@
+version: "3.8"
+
+
+
+services:
+  database:
+    image: postgres:latest
+    container_name: 'km-postgres'
+    environment:
+      POSTGRES_USER: someuser
+      POSTGRES_DB: kombucha
+      POSTGRES_PASSWORD: somepassword
+
+    ports:
+      - "6545:6545"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:
