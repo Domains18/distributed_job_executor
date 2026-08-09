@@ -4,7 +4,7 @@
 
 
 1. Log-Structured Merge-tree
-- so I came accross LSM terminology check [LSM] (https://en.wikipedia.org/wiki/Log-structured_merge-tree), it stands for Log-Structured Merge tree. it is a specialized data structure optimized database storage engines that require very high write speeds with massive data ingestion.
+- so I came accross LSM terminology check [LSM](https://en.wikipedia.org/wiki/Log-structured_merge-tree), it stands for Log-Structured Merge tree. it is a specialized data structure optimized database storage engines that require very high write speeds with massive data ingestion.
 
 ### components
 - Write Ahead Log (WAL) - A desk-based log that records every incoming write sequantially to ensure data safety and crash recovery
