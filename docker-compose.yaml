@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  coordinator:
+    build:
+      context: .
+      target: coordinator
+    container_name: kombucha-coordinator
+    ports:
+      - "8080:8080"
+    volumes:
+      - kombucha_data:/data
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      target: worker
+    depends_on:
+      coordinator:
+        condition: service_healthy
+    deploy:
+      replicas: 3
+    restart: unless-stopped
+    command:
+      - "-coordinator=http://coordinator:8080"
+      - "-queues=critical,email,default,bulk"
+      - "-capacity=10"
+
+volumes:
+  kombucha_data:
+    driver: local
