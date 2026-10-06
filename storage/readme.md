@@ -2,28 +2,22 @@
 
 - I had previously decided I'd use postgres but changed my mind and instead decided to build an in-memory persistent and networking layers storage.
 
-### dependency direction
-
-core/   ← job types, record types, LSN. Imports nothing.
-  ↑
-wal/  index/  snapshot/   ← leaf packages, mutually unaware
-  ↑
-engine/   ← orchestrates, defines the interfaces it consumes
-  ↑
-transport/  ← knows nothing about storage
-
+## dependency direction
+engine declares type Log interface { Append(context.Context, []core.Record) (core.LSN, error) } and wal just returns a *wal.Log that happens to satisfy it. Consumer-defined interfaces, Go-idiomatic, and it makes the engine testable with fakes.
 
 1. Log-Structured Merge-tree ([LSM](https://en.wikipedia.org/wiki/Log-structured_merge-tree))
-- so I came accross LSM terminology check it stands for Log-Structured Merge tree. it is a specialized data structure optimized database storage engines that require very high write speeds with massive data ingestion.
+   - so I came accross LSM terminology check it stands for Log-Structured Merge tree. it is a specialized data structure optimized database storage engines that require very high write speeds with massive data ingestion.
 
-### components
-- Write Ahead Log (WAL) - A desk-based log that records every incoming write sequantially to ensure data safety and crash recovery
+    ### components
 
-- Memtable: An in-memory data structure(like tree or skip list) where new writes go first for instant recording in a sorted order
+    - Write Ahead Log (WAL) - A desk-based log that records every incoming write sequantially to ensure data safety and crash recovery
 
-- Sorted String Tables (SSTABLES): Immutable, sorted data files saved onto a disk once the memtable reaches its capacity limit
+    - Memtable: An in-memory data structure(like tree or skip list) where new writes go first for instant recording in a sorted order
 
-- Compaction: A background process that merges older SSTables on disk, removes deleted or overwitted data
+    - Sorted String Tables (SSTABLES): Immutable, sorted data files saved onto a disk once the memtable reaches its capacity limit
+
+    - Compaction: A background process that merges older SSTables on disk, removes deleted or overwitted data
+
 
 
 2. Cyclic Redundancy Check([CRC](https://en.wikipedia.org/wiki/Cyclic_redundancy_check))
